@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,15 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      {/* body saya sesuaikan kelasnya */}
+      {/* Hanya body kosong, Navbar sudah dipindah ke (public)/layout.tsx */}
       <body className="min-h-full flex flex-col bg-gray-50">
-        {/* Navbar dipanggil di sini */}
-        <Navbar />
-        
-        {/* Konten halaman dibungkus di dalam main */}
-        <main className="flex-grow">
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );
