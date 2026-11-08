@@ -1,167 +1,104 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function DashboardPage() {
+export default function LoginPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
-  const [isChecking, setIsChecking] = useState(true);
 
-  useEffect(() => {
-    const isLoggedIn = document.cookie.includes("operator_token");
-    if (!isLoggedIn) {
-      router.push("/login");
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // LOGIN SIMULASI
+    if (username === "admin" && password === "admin123") {
+      document.cookie = "operator_token=rahasia_ppdb; path=/; max-age=86400";
+      router.push("/dashboard");
     } else {
-      setIsChecking(false);
+      alert("Username atau Password salah! (Gunakan admin / admin123)");
     }
-  }, [router]);
-
-  if (isChecking) {
-    return <div className="text-gray-500">Memeriksa akses...</div>;
-  }
-
-  // Data dummy untuk statistik
-  const stats = [
-    { title: "Total Pendaftar", value: "124", icon: "👥", color: "bg-blue-500" },
-    { title: "Diterima", value: "85", icon: "✅", color: "bg-green-500" },
-    { title: "Dalam Proses", value: "32", icon: "⏳", color: "bg-yellow-500" },
-    { title: "Ditolak", value: "7", icon: "❌", color: "bg-red-500" },
-  ];
+  };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header Halaman */}
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Ikhtisar Dashboard</h1>
-          <p className="text-gray-500 mt-1">Pantau statistik pendaftaran dan kelola konten sekolah.</p>
+    <div className="min-h-screen flex bg-white">
+      {/* Sisi Kiri: Branding / Gambar (Hanya tampil di layar besar) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-blue-600 relative overflow-hidden flex-col justify-between p-12">
+        {/* Ornamen Latar Belakang */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+          <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-72 h-72 bg-yellow-300 rounded-full blur-3xl"></div>
         </div>
-        <Link 
-          href="/" 
-          target="_blank"
-          className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2 text-sm"
-        >
-          🌐 Lihat Halaman Publik
-        </Link>
+
+        <div className="relative z-10">
+          <Link href="/" className="text-2xl font-bold text-white tracking-wide flex items-center gap-2">
+            <span className="text-3xl">🎓</span> PPDB Sekolah
+          </Link>
+        </div>
+
+        <div className="relative z-10 mb-10">
+          <h2 className="text-4xl font-extrabold text-white leading-tight mb-4">
+            Sistem Informasi <br /> Operator PPDB
+          </h2>
+          <p className="text-blue-100 text-lg max-w-md">
+            Kelola pendaftaran, perbarui visi & misi, dan atur galeri sekolah dengan mudah dalam satu platform.
+          </p>
+        </div>
+
+        <div className="relative z-10 text-blue-200 text-sm">
+          © 2026 PPDB Sekolah Kami. All rights reserved.
+        </div>
       </div>
 
-      {/* Kartu Statistik */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div className={`w-14 h-14 ${stat.color} bg-opacity-10 rounded-xl flex items-center justify-center text-2xl`}>
-              {stat.icon}
-            </div>
+      {/* Sisi Kanan: Form Login */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12">
+        <div className="w-full max-w-md">
+          {/* Header Form */}
+          <div className="mb-10 text-center lg:text-left">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Selamat Datang 👋</h1>
+            <p className="text-gray-500">Silakan masuk ke akun operator Anda.</p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <p className="text-sm font-medium text-gray-500">{stat.title}</p>
-              <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all bg-gray-50 focus:bg-white"
+                placeholder="Masukkan username Anda"
+                required
+              />
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Area Grafik & Aktivitas */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Grafik Pendaftaran (Simulasi visual) */}
-        <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Grafik Pendaftar Mingguan</h2>
-            <select className="border border-gray-200 rounded-lg text-sm px-3 py-1.5 outline-none bg-gray-50">
-              <option>7 Hari Terakhir</option>
-              <option>30 Hari Terakhir</option>
-            </select>
-          </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all bg-gray-50 focus:bg-white"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-lg hover:bg-blue-700 hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+            >
+              Masuk ke Dashboard
+            </button>
+          </form>
           
-          {/* Visualisasi Bar Chart Sederhana */}
-          <div className="h-64 flex items-end gap-2 sm:gap-4 mt-8">
-            {[40, 70, 45, 90, 65, 85, 100].map((height, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                <div className="w-full bg-blue-50 rounded-t-lg relative flex-1 flex items-end">
-                  <div 
-                    className="w-full bg-blue-500 rounded-t-lg transition-all duration-500 group-hover:bg-blue-600" 
-                    style={{ height: `${height}%` }}
-                  ></div>
-                </div>
-                <span className="text-xs text-gray-400 font-medium">Hari {i+1}</span>
-              </div>
-            ))}
+          {/* Footer Form */}
+          <div className="mt-8 text-center">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
+              <span>←</span> Kembali ke Beranda Utama
+            </Link>
           </div>
-        </div>
-
-        {/* Aktivitas Terbaru */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900 mb-6">Pendaftar Terbaru</h2>
-          <div className="space-y-6">
-            {[
-              { name: "Budi Santoso", time: "2 menit lalu", status: "Baru" },
-              { name: "Siti Aminah", time: "1 jam lalu", status: "Verifikasi" },
-              { name: "Andi Wijaya", time: "3 jam lalu", status: "Baru" },
-              { name: "Rina Melati", time: "5 jam lalu", status: "Selesai" },
-            ].map((user, i) => (
-              <div key={i} className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold">
-                  {user.name.charAt(0)}
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold text-gray-900">{user.name}</p>
-                  <p className="text-xs text-gray-500">{user.time}</p>
-                </div>
-                <span className={`text-xs px-2 py-1 rounded-md font-medium ${
-                  user.status === 'Baru' ? 'bg-blue-50 text-blue-600' : 
-                  user.status === 'Verifikasi' ? 'bg-yellow-50 text-yellow-600' : 
-                  'bg-green-50 text-green-600'
-                }`}>
-                  {user.status}
-                </span>
-              </div>
-            ))}
-          </div>
-          <button className="w-full mt-6 text-sm text-blue-600 font-semibold hover:underline">Lihat Semua Pendaftar</button>
-        </div>
-      </div>
-
-      {/* Tabel Data Pendaftar (Detail) */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <h2 className="text-lg font-bold text-gray-900">Tabel Pendaftar PPDB</h2>
-          <button className="text-sm font-semibold text-white bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Export Data</button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-max">
-            <thead className="bg-gray-50">
-              <tr className="text-gray-500 text-sm">
-                <th className="py-4 px-6 font-semibold">Nama Siswa</th>
-                <th className="py-4 px-6 font-semibold">Asal Sekolah</th>
-                <th className="py-4 px-6 font-semibold">WhatsApp</th>
-                <th className="py-4 px-6 font-semibold">Status</th>
-                <th className="py-4 px-6 font-semibold text-center">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="py-4 px-6 font-medium text-gray-900">Budi Santoso</td>
-                <td className="py-4 px-6 text-gray-600">SDN 01</td>
-                <td className="py-4 px-6 text-gray-600">08123456789</td>
-                <td className="py-4 px-6"><span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">Diterima</span></td>
-                <td className="py-4 px-6 text-center"><button className="text-blue-600 hover:underline text-sm font-medium">Detail</button></td>
-              </tr>
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="py-4 px-6 font-medium text-gray-900">Siti Aminah</td>
-                <td className="py-4 px-6 text-gray-600">SDN 02</td>
-                <td className="py-4 px-6 text-gray-600">08987654321</td>
-                <td className="py-4 px-6"><span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold">Pending</span></td>
-                <td className="py-4 px-6 text-center"><button className="text-blue-600 hover:underline text-sm font-medium">Detail</button></td>
-              </tr>
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="py-4 px-6 font-medium text-gray-900">Andi Wijaya</td>
-                <td className="py-4 px-6 text-gray-600">SDN 05</td>
-                <td className="py-4 px-6 text-gray-600">08112233445</td>
-                <td className="py-4 px-6"><span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">Diterima</span></td>
-                <td className="py-4 px-6 text-center"><button className="text-blue-600 hover:underline text-sm font-medium">Detail</button></td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
