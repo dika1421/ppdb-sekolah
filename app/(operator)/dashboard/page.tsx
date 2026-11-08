@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -26,20 +25,7 @@ export default function DashboardPage() {
       {/* Judul Halaman */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Selamat Datang, Admin PPDB</h1>
-        <p className="text-gray-500 mt-1">Kelola website PPDB dan pantau pendaftar di sini.</p>
-      </div>
-
-      {/* Menu Pengaturan Konten Website */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <Link href="/dashboard/visi-misi" className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group">
-          <h3 className="font-bold text-lg text-blue-700 group-hover:text-blue-800">Edit Visi & Misi</h3>
-          <p className="text-sm text-gray-500 mt-1">Ubah teks visi dan misi sekolah yang tampil di halaman publik.</p>
-        </Link>
-        
-        <Link href="/dashboard/galeri" className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group">
-          <h3 className="font-bold text-lg text-blue-700 group-hover:text-blue-800">Kelola Galeri</h3>
-          <p className="text-sm text-gray-500 mt-1">Tambah atau hapus daftar foto galeri sekolah.</p>
-        </Link>
+        <p className="text-gray-500 mt-1">Pantau data pendaftar dan kelola website dari menu sebelah kiri.</p>
       </div>
 
       {/* Tabel Data Pendaftar */}
