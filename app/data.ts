@@ -8,10 +8,10 @@ export const defaultMisi = [
 ];
 
 export const defaultGaleri = [
-  { id: 1, judul: "Gedung Sekolah" },
-  { id: 2, judul: "Ruang Kelas" },
-  { id: 3, judul: "Laboratorium Komputer" },
-  { id: 4, judul: "Kegiatan Pramuka" },
-  { id: 5, judul: "Upacara Bendera" },
-  { id: 6, judul: "Perpustakaan" }
+  { id: 1, judul: "Gedung Sekolah", kategori: "Fasilitas Umum" },
+  { id: 2, judul: "Ruang Kelas X", kategori: "Ruang Kelas" },
+  { id: 3, judul: "Laboratorium Komputer", kategori: "Laboratorium" },
+  { id: 4, judul: "Kegiatan Pramuka", kategori: "Ekstrakurikuler" },
+  { id: 5, judul: "Upacara Bendera", kategori: "Kegiatan Sekolah" },
+  { id: 6, judul: "Perpustakaan", kategori: "Fasilitas Umum" },
 ];
