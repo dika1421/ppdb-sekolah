@@ -5,7 +5,8 @@ import Link from "next/link";
 import { loginAction } from "./actions";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  // Mengubah state 'email' menjadi 'username'
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -16,7 +17,8 @@ export default function LoginPage() {
 
     startTransition(async () => {
       const formData = new FormData();
-      formData.append("email", email);
+      // Mengirim 'username' ke server action
+      formData.append("username", username);
       formData.append("password", password);
 
       const result = await loginAction(formData);
@@ -25,7 +27,6 @@ export default function LoginPage() {
         setErrorMsg(result.error);
       } else if (result?.success) {
         // PAKSA HARD RELOAD AGAR SERVER MEMBACA COOKIE BARU
-        // Menggunakan window.location.href memastikan cookie benar-benar terkirim
         window.location.href = "/dashboard";
       }
     });
@@ -75,11 +76,11 @@ export default function LoginPage() {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Username Operator</label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text" // Diubah dari 'email' ke 'text' agar bisa menerima angka
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full border border-gray-300 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all bg-gray-50 focus:bg-white"
-                placeholder="admin@sekolah.com"
+                placeholder="Masukkan ID Operator / NPSN" // Mengubah placeholder
                 required
               />
             </div>

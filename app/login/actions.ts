@@ -10,17 +10,19 @@ const pool = new Pool({
 });
 
 export async function loginAction(formData: FormData) {
-  const email = formData.get("email") as string;
+  // Mengambil data dari form
+  const username = formData.get("username") as string; // Ubah dari "email"
   const password = formData.get("password") as string;
 
   try {
+    // Query database berdasarkan kolom 'username'
     const { rows } = await pool.query(
-      "SELECT id, email, password_hash FROM operators WHERE email = $1",
-      [email]
+      "SELECT id, username, password_hash FROM operators WHERE username = $1",
+      [username]
     );
 
     if (rows.length === 0) {
-      return { error: "Email tidak ditemukan!" };
+      return { error: "Username tidak ditemukan!" };
     }
 
     const operator = rows[0];
@@ -30,7 +32,6 @@ export async function loginAction(formData: FormData) {
       return { error: "Password salah!" };
     }
 
-    // Set cookie
     const cookieStore = await cookies();
     cookieStore.set("operator_token", String(operator.id), {
       httpOnly: true,
@@ -40,7 +41,6 @@ export async function loginAction(formData: FormData) {
       maxAge: 60 * 60 * 24,
     });
 
-    // Kembalikan sukses tanpa redirect
     return { success: true };
 
   } catch (error) {
