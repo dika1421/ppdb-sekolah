@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import pool from '@/lib/db'; // Pastikan file lib/db.ts Anda sudah benar
+import pool from '../../lib/db';
 
 export async function POST(req: Request) {
   try {
