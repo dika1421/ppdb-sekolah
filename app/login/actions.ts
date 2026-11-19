@@ -30,7 +30,7 @@ export async function loginAction(formData: FormData) {
       return { error: "Password salah!" };
     }
 
-    // Set cookie di server
+    // Set cookie
     const cookieStore = await cookies();
     cookieStore.set("operator_token", String(operator.id), {
       httpOnly: true,
@@ -40,7 +40,7 @@ export async function loginAction(formData: FormData) {
       maxAge: 60 * 60 * 24,
     });
 
-    // JANGAN redirect di sini. Kembalikan status sukses.
+    // Kembalikan sukses tanpa redirect
     return { success: true };
 
   } catch (error) {
