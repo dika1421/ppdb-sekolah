@@ -4,44 +4,39 @@ export default function Home() {
   return (
     <div className="text-white">
       {/* Hero Section */}
-      <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
         
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 lg:py-32 flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 lg:py-28 flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
           
           {/* Kiri: Teks & Tombol */}
           <div className="flex-1 text-center lg:text-left animate-[fadeInUp_1s_ease-out_forwards]">
             
             {/* Badge Label */}
             <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-slate-800/80 border border-slate-600 text-slate-300 text-sm font-medium mb-6 backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-blue-400"></span>
-              Solusi Manajemen Sekolah Modern
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+              Pendaftaran Tahun Ajaran 2026/2027 Telah Dibuka
             </span>
 
             {/* Judul Utama */}
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight drop-shadow-lg">
-              Kelola Sekolah <br />
-              <span className="text-green-400">Lebih Mudah &</span> <br />
-              <span className="text-blue-400">Terintegrasi</span>
+              Bergabunglah <br />
+              <span className="text-green-400">Bersama Kami</span> <br />
+              <span className="text-blue-400">SMK Darul Ulum</span>
             </h1>
 
             {/* Deskripsi */}
             <p className="mt-6 text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 font-medium leading-relaxed">
-              SIMDU adalah platform manajemen sekolah berbasis web yang menghubungkan semua elemen sekolah — siswa, guru, staf, dan orang tua — dalam satu ekosistem digital yang efisien dan transparan.
+              Cetak generasi berkarakter, berprestasi, dan berwawasan global. 
+              Daftarkan putra-putri Anda sekarang untuk menjadi bagian dari keluarga besar SMK Darul Ulum Bojongsari Depok.
             </p>
 
             {/* Tombol */}
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link
-                href="/login"
-                className="bg-green-500 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-green-600 transition-all shadow-lg hover:shadow-green-500/30 transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                href="/daftar"
+                className="bg-green-500 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-green-600 transition-all shadow-lg hover:shadow-green-500/40 transform hover:-translate-y-1 flex items-center justify-center gap-2"
               >
-                <span>→</span> Login Sekarang
-              </Link>
-              <Link
-                href="#fitur"
-                className="bg-transparent border-2 border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 hover:border-white/50 transition-all flex items-center justify-center gap-2"
-              >
-                <span>▶</span> Lihat Fitur
+                <span>→</span> Daftar Sekarang
               </Link>
             </div>
           </div>
@@ -54,17 +49,6 @@ export default function Home() {
                 alt="Logo SMKSDU" 
                 className="object-contain w-full h-full rounded-xl"
               />
-            </div>
-            
-            {/* Badge Tambahan di Bawah (Opsional, seperti di referensi) */}
-            <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl flex items-center gap-3 animate-[fadeInUp_1.5s_ease-out_forwards]">
-              <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold">
-                👥
-              </div>
-              <div>
-                <p className="text-sm font-bold text-gray-900">1.200+ Pengguna</p>
-                <p className="text-xs text-gray-500">Aktif setiap hari</p>
-              </div>
             </div>
           </div>
         </div>
