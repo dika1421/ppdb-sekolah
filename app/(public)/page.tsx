@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Home() {
   return (
@@ -9,19 +8,17 @@ export default function Home() {
         
         {/* Background Image dengan Efek Transparan & Animasi */}
         <div className="absolute inset-0 z-0 animate-[zoomIn_20s_ease-in-out_infinite_alternate]">
-          {/* Menggunakan gambar dari folder yang sama (./) */}
-          <Image
-            src="./gedung-sekolah.jpg" 
+          {/* Path diubah menjadi / karena file ada di dalam folder public */}
+          <img
+            src="/gedung-sekolah.jpg" 
             alt="Gedung Sekolah"
-            fill
-            className="object-cover object-center opacity-40"
-            priority
+            className="w-full h-full object-cover object-center opacity-40"
           />
           {/* Overlay Gradient agar teks lebih mudah dibaca */}
           <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/60 to-white/95"></div>
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 lg:py-28 flex flex-col lg:flex-row items-center gap-12">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 lg:py-28 flex flex-col-reverse lg:flex-row items-center gap-12">
           
           {/* Kiri: Teks & Tombol dengan Animasi Slide Up */}
           <div className="flex-1 text-center lg:text-left animate-[fadeInUp_1s_ease-out_forwards]">
@@ -53,16 +50,13 @@ export default function Home() {
           </div>
 
           {/* Kanan: Logo Sekolah dengan Animasi Floating */}
-          <div className="flex-1 w-full max-w-sm lg:max-w-md relative animate-[float_6s_ease-in-out_infinite]">
-            <div className="relative bg-white/60 backdrop-blur-md p-6 rounded-full shadow-2xl border-4 border-white overflow-hidden flex items-center justify-center aspect-square">
-              {/* Menggunakan logo dari folder yang sama (./) */}
-              <Image 
-                src="./logo_smk.jpg" 
+          <div className="flex-1 w-full max-w-xs sm:max-w-sm lg:max-w-md relative animate-[float_6s_ease-in-out_infinite] mb-10 lg:mb-0">
+            <div className="relative bg-white/80 backdrop-blur-md p-4 rounded-full shadow-2xl border-4 border-white overflow-hidden flex items-center justify-center aspect-square">
+              {/* Path diubah menjadi / dan menggunakan tag img biasa */}
+              <img 
+                src="/logo_smk.jpg" 
                 alt="Logo SMKSDU" 
-                width={400} 
-                height={400} 
-                className="object-contain drop-shadow-xl w-full h-full"
-                priority
+                className="object-contain w-full h-full rounded-full"
               />
             </div>
           </div>
