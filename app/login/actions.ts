@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { Pool } from "pg";
 
@@ -31,7 +30,7 @@ export async function loginAction(formData: FormData) {
       return { error: "Password salah!" };
     }
 
-    // SET COOKIE LANGSUNG DI SERVER
+    // Set cookie di server
     const cookieStore = await cookies();
     cookieStore.set("operator_token", String(operator.id), {
       httpOnly: true,
@@ -41,11 +40,11 @@ export async function loginAction(formData: FormData) {
       maxAge: 60 * 60 * 24,
     });
 
+    // JANGAN redirect di sini. Kembalikan status sukses.
+    return { success: true };
+
   } catch (error) {
     console.error("Login Error:", error);
     return { error: "Terjadi kesalahan pada server." };
   }
-
-  // Redirect SETELAH cookie diset
-  redirect("/dashboard");
 }

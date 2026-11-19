@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { loginAction } from "./actions"; // Kita akan buat file ini
+import { loginAction } from "./actions";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,7 +15,6 @@ export default function LoginPage() {
     setErrorMsg("");
 
     startTransition(async () => {
-      // Panggil Server Action
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
@@ -24,14 +23,15 @@ export default function LoginPage() {
 
       if (result?.error) {
         setErrorMsg(result.error);
-      } else {
-        // Jika berhasil, Server Action akan otomatis me-redirect kita
-        // Tidak perlu window.location.href lagi
+      } else if (result?.success) {
+        // PAKSA HARD RELOAD AGAR MIDDLEWARE MEMBACA COOKIE BARU
+        window.location.href = "/dashboard";
       }
     });
   };
 
   return (
+    // ... (SISA KODE JSX DI BAWAH INI TETAP SAMA PERSIS SEPERTI PUNYA ANDA) ...
     <div className="min-h-screen flex bg-white">
       {/* Sisi Kiri: Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-blue-600 relative overflow-hidden flex-col justify-between p-12">
@@ -53,7 +53,7 @@ export default function LoginPage() {
           </p>
         </div>
         <div className="relative z-10 text-blue-200 text-sm">
-          © 2026 PPDB Sekolah Kami. All rights reserved.
+          © 2026 P6DB Sekolah Kami. All rights reserved.
         </div>
       </div>
 
