@@ -1,48 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
+import { loginAction } from "./actions"; // Kita akan buat file ini
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setErrorMsg("");
 
-    try {
-      // Memanggil API Route internal Next.js
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // WAJIB: Agar browser mau menerima dan menyimpan cookie dari server
-        credentials: "include", 
-        body: JSON.stringify({ email, password }),
-      });
+    startTransition(async () => {
+      // Panggil Server Action
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
 
-      const data = await res.json();
+      const result = await loginAction(formData);
 
-      if (!res.ok) {
-        // Jika API mengembalikan error (401/500)
-        setErrorMsg(data.error || "Email atau Password salah!");
-        setIsLoading(false);
-        return;
+      if (result?.error) {
+        setErrorMsg(result.error);
+      } else {
+        // Jika berhasil, Server Action akan otomatis me-redirect kita
+        // Tidak perlu window.location.href lagi
       }
-
-      // Jika berhasil, arahkan ke dashboard dengan hard reload
-      // Ini memastikan layout membaca cookie yang baru diset oleh server
-      window.location.href = "/dashboard";
-      
-    } catch (error) {
-      setErrorMsg("Terjadi kesalahan jaringan. Silakan coba lagi.");
-      setIsLoading(false);
-    }
+    });
   };
 
   return (
@@ -112,12 +98,12 @@ export default function LoginPage() {
             
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isPending}
               className={`w-full text-white py-3.5 rounded-xl font-bold text-lg transition-all transform hover:-translate-y-0.5 ${
-                isLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
+                isPending ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
               }`}
             >
-              {isLoading ? "Memproses..." : "Masuk ke Dashboard"}
+              {isPending ? "Memproses..." : "Masuk ke Dashboard"}
             </button>
           </form>
           
