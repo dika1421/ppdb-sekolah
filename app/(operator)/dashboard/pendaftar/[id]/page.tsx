@@ -1,12 +1,12 @@
 import Link from 'next/link';
 
-// 1. Ubah tipe data params menjadi Promise
+// Pastikan menggunakan 'async' dan tipe Promise
 export default async function DetailPendaftarPage({ 
   params 
 }: { 
   params: Promise<{ id: string }> 
 }) {
-  // 2. Lakukan await pada params sebelum menggunakannya
+  // Wajib di-await
   const resolvedParams = await params;
   const id = resolvedParams.id;
 
