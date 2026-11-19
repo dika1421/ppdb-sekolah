@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { supabase } from "../../lib/supabase"; // Import supabase
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,19 +16,33 @@ export default function LoginPage() {
     setIsLoading(true);
     setErrorMsg("");
 
-    // Login menggunakan Supabase Auth
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+    try {
+      // Memanggil API Route internal Next.js, bukan Supabase lagi
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (error) {
-      setErrorMsg("Email atau Password salah!");
-      setIsLoading(false);
-    } else {
-      // Jika berhasil, buat cookie sederhana sebagai penanda di browser
-      document.cookie = "operator_token=rahasia_ppdb; path=/; max-age=86400";
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Jika API mengembalikan error (401/500)
+        setErrorMsg(data.error || "Email atau Password salah!");
+        setIsLoading(false);
+        return;
+      }
+
+      // Jika berhasil, cookie sudah otomatis di-set oleh server (API Route)
+      // Kita tinggal arahkan ke dashboard
       router.push("/dashboard");
+      router.refresh(); // Memaksa Next.js memperbarui status (misal untuk layout)
+      
+    } catch (error) {
+      setErrorMsg("Terjadi kesalahan jaringan. Silakan coba lagi.");
+      setIsLoading(false);
     }
   };
 
