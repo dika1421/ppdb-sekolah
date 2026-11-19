@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -9,7 +8,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,12 +15,14 @@ export default function LoginPage() {
     setErrorMsg("");
 
     try {
-      // Memanggil API Route internal Next.js, bukan Supabase lagi
+      // Memanggil API Route internal Next.js
       const res = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        // WAJIB: Agar browser mau menerima dan menyimpan cookie dari server
+        credentials: "include", 
         body: JSON.stringify({ email, password }),
       });
 
@@ -35,10 +35,9 @@ export default function LoginPage() {
         return;
       }
 
-      // Jika berhasil, cookie sudah otomatis di-set oleh server (API Route)
-      // Kita tinggal arahkan ke dashboard
-      router.push("/dashboard");
-      router.refresh(); // Memaksa Next.js memperbarui status (misal untuk layout)
+      // Jika berhasil, arahkan ke dashboard dengan hard reload
+      // Ini memastikan layout membaca cookie yang baru diset oleh server
+      window.location.href = "/dashboard";
       
     } catch (error) {
       setErrorMsg("Terjadi kesalahan jaringan. Silakan coba lagi.");
