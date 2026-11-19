@@ -10,14 +10,15 @@ export default function DaftarPage() {
     setSubmitted(true);
   }
 
+  // Tampilan jika berhasil submit
   if (submitted) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white p-10 rounded-xl shadow text-center">
-          <h1 className="text-2xl font-bold text-green-600">
+      <main className="min-h-screen flex items-center justify-center bg-transparent pt-20 px-6">
+        <div className="bg-slate-800/80 backdrop-blur-md p-10 rounded-2xl shadow-2xl border border-slate-700 text-center">
+          <h1 className="text-2xl font-bold text-green-400">
             Pendaftaran Berhasil Dikirim
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-slate-300">
             Tim kami akan menghubungi Anda melalui WhatsApp.
           </p>
         </div>
@@ -26,42 +27,47 @@ export default function DaftarPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-6">
-      <div className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-sm">
-        <h1 className="text-2xl font-bold mb-6">Formulir Pendaftaran</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    // Latar belakang dibuat transparan dan diberikan pt-32 agar tidak tertutup navbar
+    <main className="min-h-screen bg-transparent pt-32 pb-20 px-6">
+      {/* Kotak form dibuat transparan gelap (glassmorphism) */}
+      <div className="max-w-xl mx-auto bg-slate-800/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-slate-700">
+        
+        <h1 className="text-2xl font-bold text-white mb-6">Formulir Pendaftaran</h1>
+        
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-1">Nama Lengkap</label>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Nama Lengkap</label>
             <input
               required
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
               placeholder="Nama calon siswa"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Asal Sekolah</label>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Asal Sekolah</label>
             <input
               required
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
               placeholder="SD asal"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Nomor WhatsApp</label>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Nomor WhatsApp</label>
             <input
               required
               type="tel"
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
               placeholder="08xxxxxxxxxx"
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
+            className="w-full bg-green-500 text-white py-3.5 rounded-lg font-semibold hover:bg-green-600 transition-all shadow-lg shadow-green-500/30 transform hover:-translate-y-0.5 mt-4"
           >
             Kirim Pendaftaran
           </button>
         </form>
+
       </div>
     </main>
   );
