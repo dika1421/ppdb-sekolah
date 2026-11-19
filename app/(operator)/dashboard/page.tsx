@@ -1,26 +1,7 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+// HAPUS "use client" di sini (biarkan menjadi Server Component)
 import Link from "next/link";
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [isChecking, setIsChecking] = useState(true);
-
-  useEffect(() => {
-    const isLoggedIn = document.cookie.includes("operator_token");
-    if (!isLoggedIn) {
-      router.push("/login");
-    } else {
-      setIsChecking(false);
-    }
-  }, [router]);
-
-  if (isChecking) {
-    return <div className="text-gray-500">Memeriksa akses...</div>;
-  }
-
   // Data dummy untuk statistik
   const stats = [
     { title: "Total Pendaftar", value: "124", icon: "👥", color: "bg-blue-500" },
