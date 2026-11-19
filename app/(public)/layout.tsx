@@ -2,14 +2,25 @@ import Navbar from "../components/Navbar";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    // Tambahkan flex, flex-col, dan min-h-screen di sini
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
+    <div className="relative flex flex-col min-h-screen">
       
-      {/* flex-grow akan membuat area ini mengisi sisa layar */}
-      <main className="flex-grow">{children}</main>
+      {/* BACKGROUND GLOBAL (Berlaku untuk semua halaman publik) */}
+      <div className="fixed inset-0 z-0 animate-[zoomIn_20s_ease-in-out_infinite_alternate]">
+        <img
+          src="/gedung-sekolah.jpg" 
+          alt="Gedung Sekolah"
+          className="w-full h-full object-cover object-center opacity-30"
+        />
+        {/* Overlay putih agar teks tetap terbaca di halaman manapun */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/90 to-white/95"></div>
+      </div>
+
+      {/* KONTEN (Navbar & Halaman) diletakkan di atas background (z-10) */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow">{children}</main>
+      </div>
       
-      {/* Nanti kalau ada Footer, Anda bisa taruh di bawah sini */}
     </div>
   );
 }
