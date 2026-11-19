@@ -2,26 +2,23 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="bg-transparent"> 
-      {/* Hero Section - Background diambil dari layout.tsx */}
+    <div className="bg-transparent">
+      {/* Hero Section */}
       <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
         
-        {/* HAPUS BAGIAN INI DARI page.tsx */}
-        {/* <div className="absolute inset-0 z-0 ..."> ... </div> */}
+        {/* Background Gambar DIHAPUS dari sini karena sudah dipindah ke layout.tsx */}
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 lg:py-28 flex flex-col-reverse lg:flex-row items-center gap-12">
           
-          {/* Kiri: Teks & Tombol dengan Animasi Slide Up */}
+          {/* Kiri: Teks & Tombol */}
           <div className="flex-1 text-center lg:text-left animate-[fadeInUp_1s_ease-out_forwards]">
-             {/* ... (Sisa teks hero tetap sama) ... */}
-             <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-6 shadow-sm backdrop-blur-sm bg-opacity-80">
+            <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-6 shadow-sm backdrop-blur-sm bg-opacity-80">
               🎓 Pendaftaran Telah Dibuka
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight drop-shadow-sm">
               Bergabunglah Bersama <br className="hidden lg:block" />
               <span className="text-blue-600">SMK Darul Ulum</span>
             </h1>
-            {/* ... (Sisa teks & tombol) ... */}
             <p className="mt-6 text-lg text-gray-700 max-w-2xl mx-auto lg:mx-0 font-medium">
               Cetak generasi berkarakter, berprestasi, dan berwawasan global. 
               Daftarkan putra-putri Anda untuk tahun ajaran 2026/2027 sekarang.
@@ -42,7 +39,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Kanan: Logo Sekolah dengan Animasi Floating */}
+          {/* Kanan: Logo Sekolah */}
           <div className="flex-1 w-full max-w-xs sm:max-w-sm lg:max-w-md relative animate-[float_6s_ease-in-out_infinite] mb-10 lg:mb-0">
             <div className="relative bg-white/80 backdrop-blur-md p-4 rounded-full shadow-2xl border-4 border-white overflow-hidden flex items-center justify-center aspect-square">
               <img 
@@ -55,16 +52,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Fitur / Keunggulan Section (Biarkan sama) */}
-      <section className="bg-white/80 backdrop-blur-sm py-20 relative z-10"> 
-      {/* ^ Note: Saya ubah bg-gray-50 jadi bg-white/80 backdrop-blur-sm agar kotaknya agak transparan menampilkan background gedung */}
-        
+      {/* Fitur / Keunggulan Section */}
+      {/* Mengubah bg-gray-50 menjadi bg-white/60 backdrop-blur-md agar transparan */}
+      <section className="bg-white/60 backdrop-blur-md py-20 relative z-10 border-t border-white/50">
         <div className="max-w-6xl mx-auto px-6">
-          {/* ... (Sisa konten keunggulan tetap sama) ... */}
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900">Mengapa Memilih Kami?</h2>
+            <p className="mt-4 text-gray-600">Fasilitas terbaik dan lingkungan belajar yang nyaman.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="bg-white/90 backdrop-blur-lg p-8 rounded-2xl shadow-lg border border-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-6">
+                📚
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Kurikulum Modern</h3>
+              <p className="text-gray-600 leading-relaxed text-sm">
+                Pembelajaran yang aktif, inovatif, dan menyenangkan untuk mengembangkan potensi siswa secara maksimal.
+              </p>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-white/90 backdrop-blur-lg p-8 rounded-2xl shadow-lg border border-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-2xl mb-6">
+                🏫
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Fasilitas Lengkap</h3>
+              <p className="text-gray-600 leading-relaxed text-sm">
+                Ruang kelas ber-AC, laboratorium komputer, perpustakaan luas, dan area ekstrakurikuler yang memadai.
+              </p>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-white/90 backdrop-blur-lg p-8 rounded-2xl shadow-lg border border-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl mb-6">
+                🏆
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Prestasi Gemilang</h3>
+              <p className="text-gray-600 leading-relaxed text-sm">
+                Bimbingan intensif untuk meraih prestasi di bidang akademik maupun non-akademik tingkat nasional.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Animasi Keyframes khusus untuk Tailwind (Biarkan sama) */}
+      {/* Animasi Keyframes khusus untuk Tailwind */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(30px); }
