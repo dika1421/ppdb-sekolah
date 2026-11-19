@@ -9,9 +9,9 @@ export default function Home() {
         
         {/* Background Image dengan Efek Transparan & Animasi */}
         <div className="absolute inset-0 z-0 animate-[zoomIn_20s_ease-in-out_infinite_alternate]">
-          {/* Ganti '/sekolah.jpg' dengan nama file gambar Anda di folder public */}
+          {/* Menggunakan gambar dari folder yang sama (./) */}
           <Image
-            src="/sekolah.jpg" 
+            src="./gedung-sekolah.jpg" 
             alt="Gedung Sekolah"
             fill
             className="object-cover object-center opacity-40"
@@ -30,7 +30,7 @@ export default function Home() {
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight drop-shadow-sm">
               Bergabunglah Bersama <br className="hidden lg:block" />
-              <span className="text-blue-600">PPDB Sekolah Kami</span>
+              <span className="text-blue-600">SMK Darul Ulum</span>
             </h1>
             <p className="mt-6 text-lg text-gray-700 max-w-2xl mx-auto lg:mx-0 font-medium">
               Cetak generasi berkarakter, berprestasi, dan berwawasan global. 
@@ -54,14 +54,14 @@ export default function Home() {
 
           {/* Kanan: Logo Sekolah dengan Animasi Floating */}
           <div className="flex-1 w-full max-w-sm lg:max-w-md relative animate-[float_6s_ease-in-out_infinite]">
-            <div className="relative bg-white/50 backdrop-blur-md p-8 rounded-full shadow-2xl border-4 border-white overflow-hidden flex items-center justify-center">
-              {/* Ganti '/logo.png' dengan nama file logo Anda di folder public */}
+            <div className="relative bg-white/60 backdrop-blur-md p-6 rounded-full shadow-2xl border-4 border-white overflow-hidden flex items-center justify-center aspect-square">
+              {/* Menggunakan logo dari folder yang sama (./) */}
               <Image 
-                src="/logo.png" 
+                src="./logo_smk.jpg" 
                 alt="Logo SMKSDU" 
-                width={300} 
-                height={300} 
-                className="object-contain drop-shadow-xl"
+                width={400} 
+                height={400} 
+                className="object-contain drop-shadow-xl w-full h-full"
                 priority
               />
             </div>
