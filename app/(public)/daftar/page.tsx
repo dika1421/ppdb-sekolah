@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 // Import Server Action (pastikan path ini benar)
-import { simpanPendaftar } from "../actions/pendaftaran"; 
+import { simpanPendaftar } from '@/app/(public)/actions/pendaftaran';
 
 export default function DaftarPage() {
   const [submitted, setSubmitted] = useState(false);

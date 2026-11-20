@@ -1,5 +1,5 @@
-// HAPUS import Link karena tidak dipakai
-import pool from '../../../lib/db'; // Gunakan relative path jika @/lib/db masih error
+import pool from '../../../lib/db'; 
+import { updateStatusPendaftar } from '@/app/(public)/actions/pendaftaran';
 
 export default async function DataPendaftarPage() {
   let pendaftar: any[] = [];
@@ -58,13 +58,30 @@ export default async function DataPendaftarPage() {
                     <td className="py-4 px-6 text-gray-600">{siswa.asal_sekolah}</td>
                     <td className="py-4 px-6 text-gray-600">{siswa.no_wa}</td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        siswa.status === 'Diterima' ? 'bg-green-100 text-green-700' : 
-                        siswa.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {siswa.status}
-                      </span>
+                      
+                      {/* FORM UNTUK UPDATE STATUS */}
+                      <form action={async (formData) => {
+                        'use server';
+                        const statusBaru = formData.get('status') as string;
+                        await updateStatusPendaftar(siswa.id, statusBaru);
+                      }}>
+                        <select
+                          name="status"
+                          defaultValue={siswa.status}
+                          // onChange akan membuat form otomatis tersubmit saat opsi diganti
+                          onChange={(e) => e.target.form?.requestSubmit()}
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer outline-none border transition-colors ${
+                            siswa.status === 'Diterima' ? 'bg-green-100 text-green-700 border-green-200' : 
+                            siswa.status === 'Pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' : 
+                            'bg-red-100 text-red-700 border-red-200'
+                          }`}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Diterima">Diterima</option>
+                          <option value="Ditolak">Ditolak</option>
+                        </select>
+                      </form>
+
                     </td>
                   </tr>
                 ))
