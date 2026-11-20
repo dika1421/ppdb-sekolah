@@ -1,12 +1,17 @@
-import Link from 'next/link';
+// HAPUS import Link karena tidak dipakai
+import pool from '../../../lib/db'; // Gunakan relative path jika @/lib/db masih error
 
-export default function DataPendaftarPage() {
-  const pendaftar = [
-    { id: 1, nama: "Budi Santoso", asalSekolah: "SDN 01", wa: "08123456789", status: "Diterima" },
-    { id: 2, nama: "Siti Aminah", asalSekolah: "SDN 02", wa: "08987654321", status: "Pending" },
-    { id: 3, nama: "Andi Wijaya", asalSekolah: "SDN 05", wa: "08112233445", status: "Diterima" },
-    { id: 4, nama: "Rina Melati", asalSekolah: "SDN 03", wa: "08556677888", status: "Ditolak" },
-  ];
+export default async function DataPendaftarPage() {
+  let pendaftar: any[] = [];
+  let errorMsg = "";
+
+  try {
+    const result = await pool.query('SELECT * FROM pendaftar ORDER BY id DESC');
+    pendaftar = result.rows;
+  } catch (error) {
+    console.error("Gagal mengambil data:", error);
+    errorMsg = "Terjadi kesalahan saat mengambil data dari database.";
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -17,6 +22,13 @@ export default function DataPendaftarPage() {
           <p className="text-gray-500 mt-1">Kelola dan verifikasi berkas pendaftaran siswa baru.</p>
         </div>
       </div>
+
+      {/* Pesan Error */}
+      {errorMsg && (
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
+          {errorMsg}
+        </div>
+      )}
 
       {/* Tabel Data */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -32,23 +44,31 @@ export default function DataPendaftarPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {pendaftar.map((siswa, index) => (
-                <tr key={siswa.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-4 px-6 text-gray-500">{index + 1}</td>
-                  <td className="py-4 px-6 font-medium text-gray-900">{siswa.nama}</td>
-                  <td className="py-4 px-6 text-gray-600">{siswa.asalSekolah}</td>
-                  <td className="py-4 px-6 text-gray-600">{siswa.wa}</td>
-                  <td className="py-4 px-6">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      siswa.status === 'Diterima' ? 'bg-green-100 text-green-700' : 
-                      siswa.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      {siswa.status}
-                    </span>
+              {pendaftar.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-gray-500">
+                    Belum ada data pendaftar.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                pendaftar.map((siswa, index) => (
+                  <tr key={siswa.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-4 px-6 text-gray-500">{index + 1}</td>
+                    <td className="py-4 px-6 font-medium text-gray-900">{siswa.nama}</td>
+                    <td className="py-4 px-6 text-gray-600">{siswa.asal_sekolah}</td>
+                    <td className="py-4 px-6 text-gray-600">{siswa.no_wa}</td>
+                    <td className="py-4 px-6">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        siswa.status === 'Diterima' ? 'bg-green-100 text-green-700' : 
+                        siswa.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 
+                        'bg-red-100 text-red-700'
+                      }`}>
+                        {siswa.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
