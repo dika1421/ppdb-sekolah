@@ -1,9 +1,9 @@
-import pool from '../../../lib/db'; 
-import { updateStatusPendaftar } from '@/app/(public)/actions/pendaftaran';
+import pool from '../../../lib/db';
+import StatusDropdown from '../../../components/StatusDropdown';
 
 export default async function DataPendaftarPage() {
   let pendaftar: any[] = [];
-  let errorMsg = "";
+  let errorMsg = "";  
 
   try {
     const result = await pool.query('SELECT * FROM pendaftar ORDER BY id DESC');
@@ -59,28 +59,8 @@ export default async function DataPendaftarPage() {
                     <td className="py-4 px-6 text-gray-600">{siswa.no_wa}</td>
                     <td className="py-4 px-6">
                       
-                      {/* FORM UNTUK UPDATE STATUS */}
-                      <form action={async (formData) => {
-                        'use server';
-                        const statusBaru = formData.get('status') as string;
-                        await updateStatusPendaftar(siswa.id, statusBaru);
-                      }}>
-                        <select
-                          name="status"
-                          defaultValue={siswa.status}
-                          // onChange akan membuat form otomatis tersubmit saat opsi diganti
-                          onChange={(e) => e.target.form?.requestSubmit()}
-                          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer outline-none border transition-colors ${
-                            siswa.status === 'Diterima' ? 'bg-green-100 text-green-700 border-green-200' : 
-                            siswa.status === 'Pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' : 
-                            'bg-red-100 text-red-700 border-red-200'
-                          }`}
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Diterima">Diterima</option>
-                          <option value="Ditolak">Ditolak</option>
-                        </select>
-                      </form>
+                      {/* GUNAKAN KOMPONEN KLIEN YANG BARU KITA BUAT */}
+                      <StatusDropdown id={siswa.id} currentStatus={siswa.status} />
 
                     </td>
                   </tr>
