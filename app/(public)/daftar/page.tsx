@@ -1,28 +1,27 @@
 "use client";
 
 import { useState } from "react";
-// Import fungsi Server Action yang baru kita buat
+// Import Server Action (pastikan path ini benar)
 import { simpanPendaftar } from "../actions/pendaftaran"; 
 
 export default function DaftarPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Fungsi ini akan dipanggil oleh form
   async function handleClientAction(formData: FormData) {
     setLoading(true);
     try {
-      // Panggil fungsi dari Server Action
       await simpanPendaftar(formData);
       setSubmitted(true);
-    } catch (error) {
-      alert("Terjadi kesalahan saat mendaftar. Silakan coba lagi.");
+    } catch (error: any) {
+      // MENAMPILKAN ERROR ASLI DARI DATABASE KE LAYAR
+      console.error("Error dari server:", error);
+      alert("GAGAL MENDAFTAR: " + (error.message || "Periksa koneksi database"));
     } finally {
       setLoading(false);
     }
   }
 
-  // Tampilan jika berhasil submit
   if (submitted) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-transparent pt-20 px-6">
@@ -44,11 +43,9 @@ export default function DaftarPage() {
         
         <h1 className="text-2xl font-bold text-white mb-6">Formulir Pendaftaran</h1>
         
-        {/* KUNCI PERUBAHAN 1: Gunakan action={handleClientAction} bukan onSubmit */}
         <form action={handleClientAction} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">Nama Lengkap</label>
-            {/* KUNCI PERUBAHAN 2: Tambahkan atribut name="nama" */}
             <input
               name="nama"
               required
@@ -58,7 +55,6 @@ export default function DaftarPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">Asal Sekolah</label>
-            {/* KUNCI PERUBAHAN 3: Tambahkan atribut name="asalSekolah" */}
             <input
               name="asalSekolah"
               required
@@ -68,7 +64,6 @@ export default function DaftarPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">Nomor WhatsApp</label>
-            {/* KUNCI PERUBAHAN 4: Tambahkan atribut name="wa" */}
             <input
               name="wa"
               required
