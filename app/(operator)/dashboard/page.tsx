@@ -1,9 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { revalidatePath } from "next/cache";
-// Import koneksi database menggunakan path absolut (@) yang sudah terbukti aman
-import pool from "../../lib/db"; 
+import pool from "../../lib/db"; // Sesuaikan jumlah ../ jika letak folder berbeda
 
-// --- TAMBAHAN: Server Action untuk Hapus Data ---
+// --- SERVER ACTION UNTUK HAPUS ---
 async function hapusPendaftar(formData: FormData) {
   "use server";
   const id = formData.get("id");
@@ -11,19 +11,18 @@ async function hapusPendaftar(formData: FormData) {
 
   try {
     await pool.query("DELETE FROM pendaftar WHERE id = $1", [id]);
-    revalidatePath("/dashboard"); // Update data di halaman ini secara otomatis
+    revalidatePath("/dashboard");
   } catch (error) {
     console.error("Gagal menghapus pendaftar:", error);
   }
 }
-// ------------------------------------------------
 
-export default async function DashboardPage() {
+// --- KOMPONEN KONTEN (DIPISAH UNTUK SUSPENSE) ---
+async function DashboardContent() {
   let statsData = { total: 0, diterima: 0, pending: 0, ditolak: 0 };
   let pendaftarTerbaru: any[] = [];
 
   try {
-    // 1. Ambil statistik (Total, Diterima, Pending, Ditolak)
     const statsQuery = await pool.query(`
       SELECT 
         COUNT(*) as total,
@@ -33,7 +32,6 @@ export default async function DashboardPage() {
       FROM pendaftar
     `);
     
-    // Konversi hasil query (string) menjadi angka (number)
     const row = statsQuery.rows[0];
     statsData = {
       total: parseInt(row.total, 10),
@@ -42,7 +40,6 @@ export default async function DashboardPage() {
       ditolak: parseInt(row.ditolak, 10),
     };
 
-    // 2. Ambil 5 pendaftar terbaru untuk tabel bawah
     const terbaruQuery = await pool.query('SELECT * FROM pendaftar ORDER BY id DESC LIMIT 5');
     pendaftarTerbaru = terbaruQuery.rows;
 
@@ -50,7 +47,6 @@ export default async function DashboardPage() {
     console.error("Gagal mengambil data dashboard:", error);
   }
 
-  // Susun data statistik untuk ditampilkan di UI
   const stats = [
     { title: "Total Pendaftar", value: statsData.total.toString(), icon: "👥", color: "bg-blue-500" },
     { title: "Diterima", value: statsData.diterima.toString(), icon: "✅", color: "bg-green-500" },
@@ -59,23 +55,8 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header Halaman */}
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Ikhtisar Dashboard</h1>
-          <p className="text-gray-500 mt-1">Pantau statistik pendaftaran dan kelola konten sekolah.</p>
-        </div>
-        <Link 
-          href="/" 
-          target="_blank"
-          className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2 text-sm"
-        >
-          🌐 Lihat Halaman Publik
-        </Link>
-      </div>
-
-      {/* Kartu Statistik (Real-time dari Database) */}
+    <>
+      {/* Kartu Statistik */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => (
           <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
@@ -92,7 +73,6 @@ export default async function DashboardPage() {
 
       {/* Area Grafik & Aktivitas */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Grafik Pendaftaran (Masih simulasi visual karena butuh data tanggal di DB) */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-gray-900">Grafik Pendaftar Mingguan</h2>
@@ -117,7 +97,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Aktivitas Terbaru */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <h2 className="text-lg font-bold text-gray-900 mb-6">Pendaftar Terbaru</h2>
           <div className="space-y-6">
@@ -150,7 +129,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Tabel Data Pendaftar (Detail) */}
+      {/* Tabel Data Pendaftar */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center">
           <h2 className="text-lg font-bold text-gray-900">5 Pendaftar Terbaru</h2>
@@ -190,12 +169,10 @@ export default async function DashboardPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6 text-center">
-                      {/* --- TAMBAHAN: Area Tombol Aksi --- */}
                       <div className="flex items-center justify-center gap-4">
                         <Link href="/dashboard/pendaftar" className="text-blue-600 hover:underline text-sm font-medium">
                           Detail
                         </Link>
-                        
                         <form action={hapusPendaftar}>
                           <input type="hidden" name="id" value={siswa.id} />
                           <button
@@ -206,7 +183,6 @@ export default async function DashboardPage() {
                           </button>
                         </form>
                       </div>
-                      {/* ----------------------------------- */}
                     </td>
                   </tr>
                 ))
@@ -215,6 +191,33 @@ export default async function DashboardPage() {
           </table>
         </div>
       </div>
+    </>
+  );
+}
+
+// --- HALAMAN UTAMA (DIBUNGKUS SUSPENSE) ---
+export default function DashboardPage() {
+  return (
+    <div className="max-w-6xl mx-auto">
+      {/* Header Halaman */}
+      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Ikhtisar Dashboard</h1>
+          <p className="text-gray-500 mt-1">Pantau statistik pendaftaran dan kelola konten sekolah.</p>
+        </div>
+        <Link 
+          href="/" 
+          target="_blank"
+          className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2 text-sm"
+        >
+          🌐 Lihat Halaman Publik
+        </Link>
+      </div>
+
+      {/* BUNGKUS KONTEN DENGAN SUSPENSE AGAR LOLOS BUILD */}
+      <Suspense fallback={<div className="text-gray-500 animate-pulse">Memuat data dashboard...</div>}>
+        <DashboardContent />
+      </Suspense>
     </div>
   );
 }
