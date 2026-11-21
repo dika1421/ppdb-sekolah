@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { revalidatePath } from "next/cache";
-import pool from "../../lib/db"; // Sesuaikan path jika berbeda
+import { connection } from "next/server"; // TAMBAHAN: Import connection
+import pool from "../../lib/db"; 
 
 async function hapusPendaftar(formData: FormData) {
   "use server";
@@ -15,8 +16,11 @@ async function hapusPendaftar(formData: FormData) {
   }
 }
 
-// Konten utama dipisah
 async function DashboardContent() {
+  // TAMBAHAN: Perintah ini memaksa Next.js menunggu sampai ada request masuk
+  // sebelum menjalankan query database. Build tidak akan crash!
+  await connection(); 
+
   let statsData = { total: 0, diterima: 0, pending: 0, ditolak: 0 };
   let pendaftarTerbaru: any[] = [];
 
@@ -151,13 +155,14 @@ async function DashboardContent() {
                         <Link href="/dashboard/pendaftar" className="text-blue-600 hover:underline text-sm font-medium">
                           Detail
                         </Link>
-                        {/* INI TOMBOL HAPUS YANG ANDA MINTA */}
+                        
                         <form action={hapusPendaftar}>
                           <input type="hidden" name="id" value={siswa.id} />
                           <button type="submit" className="text-red-600 hover:text-red-800 hover:underline text-sm font-medium">
                             Hapus
                           </button>
                         </form>
+                        
                       </div>
                     </td>
                   </tr>
@@ -171,7 +176,6 @@ async function DashboardContent() {
   );
 }
 
-// Ekspor Utama dengan Suspense
 export default function DashboardPage() {
   return (
     <div className="max-w-6xl mx-auto">
