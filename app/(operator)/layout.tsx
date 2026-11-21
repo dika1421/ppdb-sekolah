@@ -2,13 +2,16 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
+// PERBAIKAN UTAMA: Paksa layout ini dirender secara dinamis (per-request)
+// agar tidak error saat proses build (prerendering).
+export const dynamic = 'force-dynamic';
+
 export default async function OperatorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // PERBAIKAN 1: Cek cookie langsung di Layout (tanpa perlu komponen AuthCheck & Suspense)
-  // Ini membuat Next.js mengenali layout ini sebagai Dynamic Route, sehingga navigasi berjalan lancar.
+  // Cek cookie langsung di Layout
   const cookieStore = await cookies();
   const token = cookieStore.get('operator_token');
 
@@ -69,7 +72,6 @@ export default async function OperatorLayout({
       </aside>
 
       {/* KONTEN UTAMA */}
-      {/* PERBAIKAN 2: Tambahkan z-0 agar konten utama tidak menutupi sidebar */}
       <main className="flex-1 p-6 md:p-10 relative z-0">
         {children}
       </main>
