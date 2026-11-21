@@ -1,17 +1,10 @@
+import { Suspense } from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
-// HAPUS: export const dynamic = 'force-dynamic'; 
-// (Karena tidak kompatibel dengan cacheComponents di next.config)
-
-export default async function OperatorLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // Panggil cookies() langsung di sini. Next.js akan otomatis 
-  // menganggap rute ini dinamis.
+// Komponen terpisah untuk mengecek cookie
+async function AuthCheck({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const token = cookieStore.get('operator_token');
 
@@ -19,40 +12,36 @@ export default async function OperatorLayout({
     redirect('/login');
   }
 
+  return <>{children}</>;
+}
+
+export default function OperatorLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex min-h-screen bg-gray-50 flex-col md:flex-row">
       
       {/* NAVBAR / SIDEBAR OPERATOR */}
-      <aside className="w-full md:w-64 bg-blue-700 text-white flex flex-col relative z-10">
+      <aside className="w-full md:w-64 bg-blue-700 text-white flex flex-col">
         <div className="p-6">
-          <Link href="/dashboard" className="text-2xl font-bold tracking-wide flex items-center gap-2 cursor-pointer">
+          <Link href="/dashboard" className="text-2xl font-bold tracking-wide flex items-center gap-2">
             <span className="text-3xl">🎓</span> Panel Operator
           </Link>
         </div>
         
         <nav className="flex-1 px-4 space-y-2 mt-4">
-          <Link 
-            href="/dashboard" 
-            className="block px-4 py-3 hover:bg-blue-600 rounded-xl transition-colors font-medium cursor-pointer"
-          >
+          <Link href="/dashboard" className="block px-4 py-3 bg-blue-800 rounded-xl font-medium transition-colors">
             📊 Dashboard
           </Link>
-          <Link 
-            href="/dashboard/pendaftar" 
-            className="block px-4 py-3 hover:bg-blue-600 rounded-xl transition-colors font-medium cursor-pointer"
-          >
+          <Link href="/dashboard/pendaftar" className="block px-4 py-3 hover:bg-blue-600 rounded-xl transition-colors">
             👥 Data Pendaftar
           </Link>
-          <Link 
-            href="/dashboard/galeri" 
-            className="block px-4 py-3 hover:bg-blue-600 rounded-xl transition-colors font-medium cursor-pointer"
-          >
+          <Link href="/dashboard/galeri" className="block px-4 py-3 hover:bg-blue-600 rounded-xl transition-colors">
             🖼️ Kelola Galeri
           </Link>
-          <Link 
-            href="/dashboard/visi-misi" 
-            className="block px-4 py-3 hover:bg-blue-600 rounded-xl transition-colors font-medium cursor-pointer"
-          >
+          <Link href="/dashboard/visi-misi" className="block px-4 py-3 hover:bg-blue-600 rounded-xl transition-colors">
             📝 Visi & Misi
           </Link>
         </nav>
@@ -72,8 +61,10 @@ export default async function OperatorLayout({
       </aside>
 
       {/* KONTEN UTAMA */}
-      <main className="flex-1 p-6 md:p-10 relative z-0">
-        {children}
+      <main className="flex-1 p-6 md:p-10">
+        <Suspense fallback={<div className="p-6 text-gray-500">Memeriksa sesi login...</div>}>
+          <AuthCheck>{children}</AuthCheck>
+        </Suspense>
       </main>
       
     </div>
