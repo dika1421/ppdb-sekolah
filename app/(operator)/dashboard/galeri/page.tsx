@@ -1,17 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { defaultGaleri } from "../../../data";
 
-export default function OperatorGaleriPage() {
+// 1. Pindahkan isi komponen asli Anda ke dalam fungsi ini
+function GaleriContent() {
   const [galeri, setGaleri] = useState<any[]>([]);
-  
-  // State untuk Form
   const [newJudul, setNewJudul] = useState("");
   const [newKategori, setNewKategori] = useState("Ruang Kelas");
   const [newGambar, setNewGambar] = useState<string | null>(null);
-  
-  // State untuk mode Edit
   const [editId, setEditId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -32,9 +29,7 @@ export default function OperatorGaleriPage() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewGambar(reader.result as string);
-      };
+      reader.onloadend = () => setNewGambar(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -46,16 +41,14 @@ export default function OperatorGaleriPage() {
     }
 
     if (editId) {
-      // MODE EDIT: Perbarui data yang ada
       const updatedGaleri = galeri.map((item) =>
         item.id === editId
           ? { ...item, judul: newJudul, kategori: newKategori, gambar: newGambar }
           : item
       );
       saveToLocalStorage(updatedGaleri);
-      setEditId(null); // Keluar dari mode edit
+      setEditId(null);
     } else {
-      // MODE TAMBAH: Buat data baru
       const newItem = {
         id: Date.now(),
         judul: newJudul,
@@ -65,10 +58,8 @@ export default function OperatorGaleriPage() {
       saveToLocalStorage([...galeri, newItem]);
     }
 
-    // Reset Form
     setNewJudul("");
     setNewGambar(null);
-    // Reset file input (opsional)
     const fileInput = document.getElementById('file-upload') as HTMLInputElement;
     if (fileInput) fileInput.value = "";
   };
@@ -78,8 +69,6 @@ export default function OperatorGaleriPage() {
     setNewJudul(item.judul);
     setNewKategori(item.kategori || "Ruang Kelas");
     setNewGambar(item.gambar);
-    
-    // Scroll ke atas agar user melihat form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -107,10 +96,7 @@ export default function OperatorGaleriPage() {
       </div>
 
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        
-        {/* Form Tambah/Edit Galeri */}
         <div className={`flex flex-col gap-4 mb-8 p-6 rounded-xl border transition-colors ${editId ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`}>
-          
           {editId && (
             <div className="mb-2 text-sm font-semibold text-yellow-700 bg-yellow-100 p-2 rounded-lg inline-block">
               ⚠️ Anda sedang mengedit foto. Klik Batal untuk membatalkan.
@@ -175,7 +161,6 @@ export default function OperatorGaleriPage() {
           </div>
         </div>
 
-        {/* Grid List Galeri */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {galeri.map((item) => (
             <div key={item.id} className={`border rounded-xl overflow-hidden flex flex-col bg-white hover:shadow-md transition-shadow ${editId === item.id ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'}`}>
@@ -215,5 +200,14 @@ export default function OperatorGaleriPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// 2. Ekspor utama dibungkus Suspense agar Next.js tidak error saat build
+export default function OperatorGaleriPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-gray-500">Memuat galeri...</div>}>
+      <GaleriContent />
+    </Suspense>
   );
 }
