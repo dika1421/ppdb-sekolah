@@ -1,5 +1,8 @@
 "use client";
 
+// TAMBAHKAN BARIS INI UNTUK MEMPERBAIKI ERROR BUILD
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import { defaultGaleri } from "../../../data";
 
