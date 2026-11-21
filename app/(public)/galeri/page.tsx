@@ -16,7 +16,7 @@ export default function GaleriPage() {
     }
   }, []);
 
-  const daftarKategori = ["Semua", "Ruang Kelas", "Laboratorium", "Ekstrakurikuler", "Fasilitas Umum", "Kegiatan Sekolah"];
+  const daftarKategori = ["Semua", "Ruang Kelas", "Laboratorium", "Ekstrakurikuler", "Fasilitas Umum", "Program Jurusan"];
 
   const filteredGaleri = filterKategori === "Semua" 
     ? galeri 
