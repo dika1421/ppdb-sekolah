@@ -1,6 +1,22 @@
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 // Import koneksi database menggunakan path absolut (@) yang sudah terbukti aman
 import pool from "../../lib/db"; 
+
+// --- TAMBAHAN: Server Action untuk Hapus Data ---
+async function hapusPendaftar(formData: FormData) {
+  "use server";
+  const id = formData.get("id");
+  if (!id) return;
+
+  try {
+    await pool.query("DELETE FROM pendaftar WHERE id = $1", [id]);
+    revalidatePath("/dashboard"); // Update data di halaman ini secara otomatis
+  } catch (error) {
+    console.error("Gagal menghapus pendaftar:", error);
+  }
+}
+// ------------------------------------------------
 
 export default async function DashboardPage() {
   let statsData = { total: 0, diterima: 0, pending: 0, ditolak: 0 };
@@ -174,9 +190,23 @@ export default async function DashboardPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6 text-center">
-                      <Link href="/dashboard/pendaftar" className="text-blue-600 hover:underline text-sm font-medium">
-                        Detail
-                      </Link>
+                      {/* --- TAMBAHAN: Area Tombol Aksi --- */}
+                      <div className="flex items-center justify-center gap-4">
+                        <Link href="/dashboard/pendaftar" className="text-blue-600 hover:underline text-sm font-medium">
+                          Detail
+                        </Link>
+                        
+                        <form action={hapusPendaftar}>
+                          <input type="hidden" name="id" value={siswa.id} />
+                          <button
+                            type="submit"
+                            className="text-red-600 hover:text-red-800 hover:underline text-sm font-medium"
+                          >
+                            Hapus
+                          </button>
+                        </form>
+                      </div>
+                      {/* ----------------------------------- */}
                     </td>
                   </tr>
                 ))
