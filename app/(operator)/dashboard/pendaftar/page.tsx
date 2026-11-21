@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
-import pool from "../../../lib/db";
+// PERBAIKAN: Path import db disesuaikan dengan struktur aslimu
+import pool from "../../../lib/db"; 
+// Kembalikan import StatusDropdown
+import StatusDropdown from '../../../components/StatusDropdown';
 
 // Server Action untuk hapus data
 async function hapusPendaftar(formData: FormData) {
@@ -10,7 +13,9 @@ async function hapusPendaftar(formData: FormData) {
 
   try {
     await pool.query("DELETE FROM pendaftar WHERE id = $1", [id]);
+    // Revalidate halaman ini agar data langsung terupdate
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/pendaftar"); // Jaga-jaga jika diakses di halaman ini
   } catch (error) {
     console.error("Gagal menghapus pendaftar:", error);
   }
@@ -21,7 +26,7 @@ export default async function DashboardPage() {
   let pendaftarTerbaru: any[] = [];
 
   try {
-    // 1. Ambil statistik (Total, Diterima, Pending, Ditolak)
+    // 1. Ambil statistik
     const statsQuery = await pool.query(`
       SELECT 
         COUNT(*) as total,
@@ -31,7 +36,6 @@ export default async function DashboardPage() {
       FROM pendaftar
     `);
     
-    // Konversi hasil query (string) menjadi angka (number)
     const row = statsQuery.rows[0];
     statsData = {
       total: parseInt(row.total, 10),
@@ -40,7 +44,7 @@ export default async function DashboardPage() {
       ditolak: parseInt(row.ditolak, 10),
     };
 
-    // 2. Ambil 5 pendaftar terbaru untuk tabel bawah
+    // 2. Ambil 5 pendaftar terbaru
     const terbaruQuery = await pool.query('SELECT * FROM pendaftar ORDER BY id DESC LIMIT 5');
     pendaftarTerbaru = terbaruQuery.rows;
 
@@ -48,7 +52,6 @@ export default async function DashboardPage() {
     console.error("Gagal mengambil data dashboard:", error);
   }
 
-  // Susun data statistik untuk ditampilkan di UI
   const stats = [
     { title: "Total Pendaftar", value: statsData.total.toString(), icon: "👥", color: "bg-blue-500" },
     { title: "Diterima", value: statsData.diterima.toString(), icon: "✅", color: "bg-green-500" },
@@ -73,7 +76,7 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Kartu Statistik (Real-time dari Database) */}
+      {/* Kartu Statistik */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => (
           <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
@@ -90,7 +93,6 @@ export default async function DashboardPage() {
 
       {/* Area Grafik & Aktivitas */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Grafik Pendaftaran (Masih simulasi visual karena butuh data tanggal di DB) */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-gray-900">Grafik Pendaftar Mingguan</h2>
@@ -115,7 +117,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Aktivitas Terbaru */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <h2 className="text-lg font-bold text-gray-900 mb-6">Pendaftar Terbaru</h2>
           <div className="space-y-6">
@@ -148,7 +149,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Tabel Data Pendaftar (Detail) */}
+      {/* Tabel Data Pendaftar */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center">
           <h2 className="text-lg font-bold text-gray-900">5 Pendaftar Terbaru</h2>
@@ -179,26 +180,20 @@ export default async function DashboardPage() {
                     <td className="py-4 px-6 text-gray-600">{siswa.asal_sekolah}</td>
                     <td className="py-4 px-6 text-gray-600">{siswa.no_wa}</td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        siswa.status === 'Diterima' ? 'bg-green-100 text-green-700' : 
-                        siswa.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {siswa.status}
-                      </span>
+                      
+                      {/* 👇 KOMPONEN STATUS DROPDOWN DIKEMBALIKAN KE SINI 👇 */}
+                      <StatusDropdown id={siswa.id} currentStatus={siswa.status} />
+                      {/* 👆 --------------------------------------------------- 👆 */}
+
                     </td>
                     <td className="py-4 px-6">
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex items-center justify-center gap-3">
                         <Link href="/dashboard/pendaftar" className="text-blue-600 hover:underline text-sm font-medium">
                           Detail
                         </Link>
-                        <form
-                          action={hapusPendaftar}
-                          onSubmit={(e) => {
-                            // Catatan: onSubmit di server component tidak jalan,
-                            // jadi konfirmasi dilakukan di sisi form action via browser
-                          }}
-                        >
+                        
+                        {/* Tombol Hapus aman menggunakan Form Action */}
+                        <form action={hapusPendaftar}>
                           <input type="hidden" name="id" value={siswa.id} />
                           <button
                             type="submit"

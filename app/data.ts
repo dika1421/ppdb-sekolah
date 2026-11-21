@@ -12,6 +12,6 @@ export const defaultGaleri = [
   { id: 2, judul: "Ruang Kelas X", kategori: "Ruang Kelas" },
   { id: 3, judul: "Laboratorium Komputer", kategori: "Laboratorium" },
   { id: 4, judul: "Kegiatan Pramuka", kategori: "Ekstrakurikuler" },
-  { id: 5, judul: "Upacara Bendera", kategori: "Kegiatan Sekolah" },
+  { id: 5, judul: "Upacara Bendera", kategori: "Program Jurusan" },
   { id: 6, judul: "Perpustakaan", kategori: "Fasilitas Umum" },
 ];
