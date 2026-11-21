@@ -2,16 +2,16 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
-// PERBAIKAN UTAMA: Paksa layout ini dirender secara dinamis (per-request)
-// agar tidak error saat proses build (prerendering).
-export const dynamic = 'force-dynamic';
+// HAPUS: export const dynamic = 'force-dynamic'; 
+// (Karena tidak kompatibel dengan cacheComponents di next.config)
 
 export default async function OperatorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Cek cookie langsung di Layout
+  // Panggil cookies() langsung di sini. Next.js akan otomatis 
+  // menganggap rute ini dinamis.
   const cookieStore = await cookies();
   const token = cookieStore.get('operator_token');
 
