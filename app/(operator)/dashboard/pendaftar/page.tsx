@@ -1,5 +1,23 @@
+import { revalidatePath } from "next/cache";
 import pool from '../../../lib/db';
 import StatusDropdown from '../../../components/StatusDropdown';
+
+// --- TAMBAHAN: Server Action untuk Hapus ---
+async function hapusPendaftar(formData: FormData) {
+  "use server";
+  const id = formData.get("id");
+  if (!id) return;
+  
+  try {
+    await pool.query("DELETE FROM pendaftar WHERE id = $1", [id]);
+    // Segarkan data secara otomatis
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/pendaftar");
+  } catch (error) {
+    console.error("Gagal menghapus:", error);
+  }
+}
+// ------------------------------------------
 
 export default async function DataPendaftarPage() {
   let pendaftar: any[] = [];
@@ -41,12 +59,13 @@ export default async function DataPendaftarPage() {
                 <th className="py-4 px-6 font-semibold">Asal Sekolah</th>
                 <th className="py-4 px-6 font-semibold">No. WhatsApp</th>
                 <th className="py-4 px-6 font-semibold">Status</th>
+                <th className="py-4 px-6 font-semibold text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {pendaftar.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-gray-500">
+                  <td colSpan={6} className="py-8 text-center text-gray-500">
                     Belum ada data pendaftar.
                   </td>
                 </tr>
@@ -59,8 +78,23 @@ export default async function DataPendaftarPage() {
                     <td className="py-4 px-6 text-gray-600">{siswa.no_wa}</td>
                     <td className="py-4 px-6">
                       
-                      {/* GUNAKAN KOMPONEN KLIEN YANG BARU KITA BUAT */}
+                      {/* Komponen asli Anda */}
                       <StatusDropdown id={siswa.id} currentStatus={siswa.status} />
+
+                    </td>
+                    <td className="py-4 px-6 text-center">
+                      
+                      {/* --- TOMBOL HAPUS BARU --- */}
+                      <form action={hapusPendaftar}>
+                        <input type="hidden" name="id" value={siswa.id} />
+                        <button
+                          type="submit"
+                          className="text-red-600 hover:text-red-800 hover:underline text-sm font-medium transition-colors"
+                        >
+                          Hapus
+                        </button>
+                      </form>
+                      {/* -------------------------- */}
 
                     </td>
                   </tr>
