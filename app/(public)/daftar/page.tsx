@@ -54,12 +54,12 @@ export default function DaftarPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Asal Sekolah</label>
+            <label className="block text-sm font-medium text-slate-300 mb-2">SMP/MTs asal</label>
             <input
               name="asalSekolah"
               required
               className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
-              placeholder="SD asal"
+              placeholder="SMP/MTs asal"
             />
           </div>
           <div>

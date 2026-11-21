@@ -21,7 +21,7 @@ export default function Home() {
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight drop-shadow-lg">
               Bergabunglah <br />
               <span className="text-green-400">Bersama Kami</span> <br />
-              <span className="text-blue-400">SMK Darul Ulum</span>
+              <span className="text-blue-400">SMKS Darul Ulum</span>
             </h1>
 
             {/* Deskripsi */}

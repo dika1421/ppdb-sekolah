@@ -140,7 +140,7 @@ export default function OperatorGaleriPage() {
                 <option value="Laboratorium">Laboratorium</option>
                 <option value="Ekstrakurikuler">Ekstrakurikuler</option>
                 <option value="Fasilitas Umum">Fasilitas Umum</option>
-                <option value="Kegiatan Sekolah">Kegiatan Sekolah</option>
+                <option value="Program Jurusan">Program Jurusan</option>
               </select>
             </div>
           </div>
