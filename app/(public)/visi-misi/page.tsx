@@ -38,7 +38,7 @@ export default function PublicVisiMisiPage() {
             {visi.length > 0 && (
               <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-slate-700">
                 <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-600 pb-4">Visi Kami</h2>
-                <div className="space-y-4"> {/* Ditambah space-y-4 agar jarak antar paragraf rapi */}
+                <div className="space-y-4">
                   {visi.map((item) => (
                     <p key={item.id} className="text-slate-200 text-lg leading-relaxed whitespace-pre-wrap">
                       {/* Membersihkan angka manual di depan teks visi (jika ada) */}
@@ -54,15 +54,22 @@ export default function PublicVisiMisiPage() {
               <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-slate-700">
                 <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-600 pb-4">Misi Kami</h2>
                 <ul className="space-y-4">
-                  {misi.map((item, index) => (
-                    <li key={item.id} className="flex gap-4 text-slate-200 text-lg leading-relaxed">
-                      <span className="font-bold text-green-400 shrink-0">{index + 1}.</span>
-                      <span className="whitespace-pre-wrap">
-                        {/* Membersihkan angka manual di depan teks misi (jika ada) */}
-                        {item.konten.replace(/^\d+\.\s*/, '')}
-                      </span>
-                    </li>
-                  ))}
+                  {misi.map((item, index) => {
+                    // Memecah teks berdasarkan tombol Enter (baris baru)
+                    // Filter digunakan untuk menghapus baris yang kosong
+                    const barisMisi = item.konten.split('\n').filter((baris: string) => baris.trim() !== '');
+                    
+                    return barisMisi.map((teks: string, i: number) => (
+                      <li key={`${item.id}-${i}`} className="flex gap-4 text-slate-200 text-lg leading-relaxed">
+                        {/* Angka akan bertambah otomatis berdasarkan baris */}
+                        <span className="font-bold text-green-400 shrink-0">{i + 1}.</span>
+                        <span className="whitespace-pre-wrap">
+                          {/* Membersihkan angka manual di depan teks misi (jika ada) */}
+                          {teks.replace(/^\d+\.\s*/, '')} 
+                        </span>
+                      </li>
+                    ));
+                  })}
                 </ul>
               </div>
             )}
