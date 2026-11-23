@@ -1,13 +1,26 @@
-import pool from "../lib/db"; // Sesuaikan path jika berbeda
+import pool from "../../lib/db"; // Path sudah benar
 import Link from "next/link";
 
-export default async function GaleriPage() {
+export default async function GaleriPage({
+  searchParams,
+}: {
+  searchParams: { kategori?: string };
+}) {
   let galeri: any[] = [];
+  const filterAktif = searchParams.kategori || "Semua";
 
   try {
-    // 1. Ambil data dari Database Neon
-    const result = await pool.query("SELECT * FROM galeri ORDER BY id DESC");
-    galeri = result.rows;
+    // Ambil data dari Neon. Jika ada filter kategori, ambil sesuai kategori.
+    if (filterAktif !== "Semua") {
+      const result = await pool.query(
+        "SELECT * FROM galeri WHERE kategori = $1 ORDER BY id DESC",
+        [filterAktif]
+      );
+      galeri = result.rows;
+    } else {
+      const result = await pool.query("SELECT * FROM galeri ORDER BY id DESC");
+      galeri = result.rows;
+    }
   } catch (error) {
     console.error("Gagal mengambil data galeri:", error);
   }
@@ -24,21 +37,24 @@ export default async function GaleriPage() {
           <p className="text-slate-300">Melihat lebih dekat fasilitas dan kegiatan kami.</p>
         </div>
 
-        {/* Tombol Filter Kategori */}
-        {/* 
-          Catatan: Karena ini Server Component, filter menggunakan Link (bukan useState).
-          Saat tombol di-klik, halaman akan memuat ulang dengan URL ?kategori=... 
-        */}
+        {/* Tombol Filter Kategori (Menggunakan Link agar Server Component bisa bekerja) */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {daftarKategori.map((kategori) => (
-            <Link
-              key={kategori}
-              href={kategori === "Semua" ? "/galeri" : `/galeri?kategori=${kategori}`}
-              className="px-5 py-2 rounded-full text-sm font-semibold transition-all bg-slate-800/80 backdrop-blur-md text-slate-300 border border-slate-600 hover:bg-slate-700 hover:text-white"
-            >
-              {kategori}
-            </Link>
-          ))}
+          {daftarKategori.map((kategori) => {
+            const isActive = filterAktif === kategori;
+            return (
+              <Link
+                key={kategori}
+                href={kategori === "Semua" ? "/galeri" : `/galeri?kategori=${kategori}`}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                  isActive
+                    ? "bg-green-500 text-white shadow-lg shadow-green-500/30" 
+                    : "bg-slate-800/80 backdrop-blur-md text-slate-300 border border-slate-600 hover:bg-slate-700"
+                }`}
+              >
+                {kategori}
+              </Link>
+            );
+          })}
         </div>
         
         {/* Grid Galeri */}
@@ -47,7 +63,6 @@ export default async function GaleriPage() {
             galeri.map((item: any) => (
               <div key={item.id} className="bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-slate-700 overflow-hidden group hover:shadow-2xl hover:bg-slate-800 transition-all duration-300">
                 {item.gambar ? (
-                  // 2. Gambar sekarang diambil dari URL Cloudinary yang tersimpan di Neon
                   <img src={item.gambar} alt={item.judul} className="w-full h-48 object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                 ) : (
                   <div className="h-48 bg-slate-700/50 flex items-center justify-center text-slate-400 group-hover:bg-slate-700 transition-colors">
@@ -64,7 +79,7 @@ export default async function GaleriPage() {
             ))
           ) : (
             <div className="col-span-full text-center py-10 text-slate-400">
-              Belum ada foto galeri.
+              Belum ada foto untuk kategori ini.
             </div>
           )}
         </div>
