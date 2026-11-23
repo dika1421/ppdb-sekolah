@@ -14,7 +14,7 @@ export default function Home() {
             {/* Badge Label */}
             <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-slate-800/80 border border-slate-600 text-slate-300 text-sm font-medium mb-6 backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-              Pendaftaran Tahun Ajaran 2026/2027 Telah Dibuka
+              Pendaftaran Tahun Ajaran 2027/2028 Telah Dibuka
             </span>
 
             {/* Judul Utama */}
@@ -44,12 +44,14 @@ export default function Home() {
           {/* Kanan: Gambar Brosur */}
           <div className="flex-1 w-full max-w-md lg:max-w-xl relative animate-[float_6s_ease-in-out_infinite] mb-10 lg:mb-0">
             <div className="relative bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex items-center justify-center">
-              {/* GANTI GAMBAR DI SINI */}
+              
+              {/* PERBAIKAN: Nama file diubah menjadi .jpeg */}
               <img 
-                src="/brosur_ppdb.jpg" 
+                src="/brosur_ppdb.jpeg" 
                 alt="Brosur PPDB SMKSDU" 
-                className="object-contain w-full h-auto rounded-xl"
+                className="w-full h-auto object-cover rounded-xl"
               />
+              
             </div>
           </div>
         </div>
