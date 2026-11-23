@@ -1,63 +1,53 @@
-"use client";
+import pool from "../lib/db"; // Sesuaikan path jika berbeda
+import Link from "next/link";
 
-import { useEffect, useState } from "react";
-import { defaultGaleri } from "../../data";
+export default async function GaleriPage() {
+  let galeri: any[] = [];
 
-export default function GaleriPage() {
-  const [galeri, setGaleri] = useState<any[]>([]);
-  const [filterKategori, setFilterKategori] = useState("Semua");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("ppdb_galeri");
-    if (saved) {
-      setGaleri(JSON.parse(saved));
-    } else {
-      setGaleri(defaultGaleri);
-    }
-  }, []);
+  try {
+    // 1. Ambil data dari Database Neon
+    const result = await pool.query("SELECT * FROM galeri ORDER BY id DESC");
+    galeri = result.rows;
+  } catch (error) {
+    console.error("Gagal mengambil data galeri:", error);
+  }
 
   const daftarKategori = ["Semua", "Ruang Kelas", "Laboratorium", "Ekstrakurikuler", "Fasilitas Umum", "Program Jurusan"];
 
-  const filteredGaleri = filterKategori === "Semua" 
-    ? galeri 
-    : galeri.filter(item => item.kategori === filterKategori);
-
   return (
-    // 1. Latar belakang dibuat transparan, beri pt-32 agar tidak tertutup navbar
     <main className="min-h-screen bg-transparent pt-32 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
         
         {/* Header */}
         <div className="text-center mb-8">
-          {/* 2. Warna teks diubah menjadi putih */}
           <h1 className="text-3xl font-bold text-white mb-2">Galeri Sekolah</h1>
           <p className="text-slate-300">Melihat lebih dekat fasilitas dan kegiatan kami.</p>
         </div>
 
         {/* Tombol Filter Kategori */}
+        {/* 
+          Catatan: Karena ini Server Component, filter menggunakan Link (bukan useState).
+          Saat tombol di-klik, halaman akan memuat ulang dengan URL ?kategori=... 
+        */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
           {daftarKategori.map((kategori) => (
-            <button
+            <Link
               key={kategori}
-              onClick={() => setFilterKategori(kategori)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                filterKategori === kategori
-                  ? "bg-green-500 text-white shadow-lg shadow-green-500/30" // Warna aktif disesuaikan dengan tombol navbar
-                  : "bg-slate-800/80 backdrop-blur-md text-slate-300 border border-slate-600 hover:bg-slate-700" // Warna tidak aktif transparan
-              }`}
+              href={kategori === "Semua" ? "/galeri" : `/galeri?kategori=${kategori}`}
+              className="px-5 py-2 rounded-full text-sm font-semibold transition-all bg-slate-800/80 backdrop-blur-md text-slate-300 border border-slate-600 hover:bg-slate-700 hover:text-white"
             >
               {kategori}
-            </button>
+            </Link>
           ))}
         </div>
         
         {/* Grid Galeri */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {filteredGaleri.length > 0 ? (
-            filteredGaleri.map((item: any) => (
-              // 3. Kartu diubah menjadi transparan gelap
+          {galeri.length > 0 ? (
+            galeri.map((item: any) => (
               <div key={item.id} className="bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-slate-700 overflow-hidden group hover:shadow-2xl hover:bg-slate-800 transition-all duration-300">
                 {item.gambar ? (
+                  // 2. Gambar sekarang diambil dari URL Cloudinary yang tersimpan di Neon
                   <img src={item.gambar} alt={item.judul} className="w-full h-48 object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                 ) : (
                   <div className="h-48 bg-slate-700/50 flex items-center justify-center text-slate-400 group-hover:bg-slate-700 transition-colors">
@@ -74,7 +64,7 @@ export default function GaleriPage() {
             ))
           ) : (
             <div className="col-span-full text-center py-10 text-slate-400">
-              Belum ada foto untuk kategori ini.
+              Belum ada foto galeri.
             </div>
           )}
         </div>
