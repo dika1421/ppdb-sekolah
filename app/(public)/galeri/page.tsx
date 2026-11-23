@@ -1,17 +1,15 @@
-import pool from "../../lib/db"; // Path sudah benar
+import pool from "../../lib/db";
 import Link from "next/link";
-import { connection } from "next/server"; // <-- TAMBAHKAN INI
+
+// PASTIKAN BARIS INI ADA DI PALING ATAS (SETELAH IMPORT)
+// Ini memaksa Next.js untuk tidak melakukan prerender statis pada halaman ini.
+export const dynamic = 'force-dynamic';
 
 export default async function GaleriPage({
   searchParams,
 }: {
   searchParams: { kategori?: string };
 }) {
-  // <-- TAMBAHKAN BARIS INI
-  // Memaksa halaman ini untuk dirender saat ada pengunjung (dinamis),
-  // bukan saat proses build. Ini akan menghentikan error prerender.
-  await connection(); 
-
   let galeri: any[] = [];
   const filterAktif = searchParams.kategori || "Semua";
 
