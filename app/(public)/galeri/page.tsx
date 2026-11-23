@@ -1,16 +1,21 @@
 import pool from "../../lib/db"; // Path sudah benar
 import Link from "next/link";
+import { connection } from "next/server"; // <-- TAMBAHKAN INI
 
 export default async function GaleriPage({
   searchParams,
 }: {
   searchParams: { kategori?: string };
 }) {
+  // <-- TAMBAHKAN BARIS INI
+  // Memaksa halaman ini untuk dirender saat ada pengunjung (dinamis),
+  // bukan saat proses build. Ini akan menghentikan error prerender.
+  await connection(); 
+
   let galeri: any[] = [];
   const filterAktif = searchParams.kategori || "Semua";
 
   try {
-    // Ambil data dari Neon. Jika ada filter kategori, ambil sesuai kategori.
     if (filterAktif !== "Semua") {
       const result = await pool.query(
         "SELECT * FROM galeri WHERE kategori = $1 ORDER BY id DESC",
@@ -37,7 +42,7 @@ export default async function GaleriPage({
           <p className="text-slate-300">Melihat lebih dekat fasilitas dan kegiatan kami.</p>
         </div>
 
-        {/* Tombol Filter Kategori (Menggunakan Link agar Server Component bisa bekerja) */}
+        {/* Tombol Filter Kategori */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
           {daftarKategori.map((kategori) => {
             const isActive = filterAktif === kategori;
