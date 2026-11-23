@@ -1,74 +1,63 @@
-import pool from "../../lib/db";
-import Link from "next/link";
+"use client";
 
-// PASTIKAN BARIS INI ADA DI PALING ATAS (SETELAH IMPORT)
-// Ini memaksa Next.js untuk tidak melakukan prerender statis pada halaman ini.
-export const dynamic = 'force-dynamic';
+import { useEffect, useState } from "react";
 
-export default async function GaleriPage({
-  searchParams,
-}: {
-  searchParams: { kategori?: string };
-}) {
-  let galeri: any[] = [];
-  const filterAktif = searchParams.kategori || "Semua";
+export default function GaleriPage() {
+  const [galeri, setGaleri] = useState<any[]>([]);
+  const [filterKategori, setFilterKategori] = useState("Semua");
+  const [isLoading, setIsLoading] = useState(true);
 
-  try {
-    if (filterAktif !== "Semua") {
-      const result = await pool.query(
-        "SELECT * FROM galeri WHERE kategori = $1 ORDER BY id DESC",
-        [filterAktif]
-      );
-      galeri = result.rows;
-    } else {
-      const result = await pool.query("SELECT * FROM galeri ORDER BY id DESC");
-      galeri = result.rows;
-    }
-  } catch (error) {
-    console.error("Gagal mengambil data galeri:", error);
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("/api/galeri");
+      const data = await res.json();
+      setGaleri(data);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
 
   const daftarKategori = ["Semua", "Ruang Kelas", "Laboratorium", "Ekstrakurikuler", "Fasilitas Umum", "Program Jurusan"];
+
+  const filteredGaleri = filterKategori === "Semua" 
+    ? galeri 
+    : galeri.filter(item => item.kategori === filterKategori);
 
   return (
     <main className="min-h-screen bg-transparent pt-32 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
         
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Galeri Sekolah</h1>
           <p className="text-slate-300">Melihat lebih dekat fasilitas dan kegiatan kami.</p>
         </div>
 
-        {/* Tombol Filter Kategori */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {daftarKategori.map((kategori) => {
-            const isActive = filterAktif === kategori;
-            return (
-              <Link
-                key={kategori}
-                href={kategori === "Semua" ? "/galeri" : `/galeri?kategori=${kategori}`}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                  isActive
-                    ? "bg-green-500 text-white shadow-lg shadow-green-500/30" 
-                    : "bg-slate-800/80 backdrop-blur-md text-slate-300 border border-slate-600 hover:bg-slate-700"
-                }`}
-              >
-                {kategori}
-              </Link>
-            );
-          })}
+          {daftarKategori.map((kategori) => (
+            <button
+              key={kategori}
+              onClick={() => setFilterKategori(kategori)}
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                filterKategori === kategori
+                  ? "bg-green-500 text-white shadow-lg shadow-green-500/30" 
+                  : "bg-slate-800/80 backdrop-blur-md text-slate-300 border border-slate-600 hover:bg-slate-700"
+              }`}
+            >
+              {kategori}
+            </button>
+          ))}
         </div>
         
-        {/* Grid Galeri */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {galeri.length > 0 ? (
-            galeri.map((item: any) => (
+          {isLoading ? (
+            <div className="col-span-full text-center py-10 text-slate-400">Memuat galeri...</div>
+          ) : filteredGaleri.length > 0 ? (
+            filteredGaleri.map((item: any) => (
               <div key={item.id} className="bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-slate-700 overflow-hidden group hover:shadow-2xl hover:bg-slate-800 transition-all duration-300">
                 {item.gambar ? (
                   <img src={item.gambar} alt={item.judul} className="w-full h-48 object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                 ) : (
-                  <div className="h-48 bg-slate-700/50 flex items-center justify-center text-slate-400 group-hover:bg-slate-700 transition-colors">
+                  <div className="h-48 bg-slate-700/50 flex items-center justify-center text-slate-400">
                     <span>[ Tanpa Foto ]</span>
                   </div>
                 )}
