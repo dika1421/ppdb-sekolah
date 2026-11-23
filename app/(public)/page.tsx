@@ -41,13 +41,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Kanan: Logo di dalam Kotak Putih */}
-          <div className="flex-1 w-full max-w-sm lg:max-w-md relative animate-[float_6s_ease-in-out_infinite] mb-10 lg:mb-0">
-            <div className="relative bg-white p-4 sm:p-6 rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex items-center justify-center aspect-square lg:w-[450px] lg:h-[450px]">
+          {/* Kanan: Gambar Brosur */}
+          <div className="flex-1 w-full max-w-md lg:max-w-xl relative animate-[float_6s_ease-in-out_infinite] mb-10 lg:mb-0">
+            <div className="relative bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex items-center justify-center">
+              {/* GANTI GAMBAR DI SINI */}
               <img 
-                src="/logo_smk.jpg" 
-                alt="Logo SMKSDU" 
-                className="object-contain w-full h-full rounded-xl"
+                src="/brosur_ppdb.jpg" 
+                alt="Brosur PPDB SMKSDU" 
+                className="object-contain w-full h-auto rounded-xl"
               />
             </div>
           </div>
