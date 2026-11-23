@@ -1,48 +1,75 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { defaultVisi, defaultMisi } from "../../data"; 
 
-export default function VisiMisiPage() {
-  const [visi, setVisi] = useState(defaultVisi);
-  const [misi, setMisi] = useState(defaultMisi);
+export default function PublicVisiMisiPage() {
+  const [dataVisiMisi, setDataVisiMisi] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Ambil data dari API dengan parameter visi-misi
   useEffect(() => {
-    const savedVisi = localStorage.getItem("ppdb_visi");
-    const savedMisi = localStorage.getItem("ppdb_misi");
-
-    if (savedVisi) setVisi(savedVisi);
-    if (savedMisi) setMisi(JSON.parse(savedMisi));
+    const fetchData = async () => {
+      const res = await fetch("/api/galeri?type=visi-misi");
+      const data = await res.json();
+      setDataVisiMisi(data);
+      setIsLoading(false);
+    };
+    fetchData();
   }, []);
 
+  const visi = dataVisiMisi.filter((item) => item.tipe === "Visi");
+  const misi = dataVisiMisi.filter((item) => item.tipe === "Misi");
+
   return (
-    // 1. Latar belakang dibuat transparan, dan diberikan pt-32 agar tidak tertutup navbar
     <main className="min-h-screen bg-transparent pt-32 pb-20 px-6">
-      
-      {/* 2. Kotak dibuat semi-transparan gelap (glassmorphism) */}
-      <div className="max-w-3xl mx-auto bg-slate-800/80 backdrop-blur-md p-8 md:p-12 rounded-2xl shadow-2xl border border-slate-700">
+      <div className="max-w-4xl mx-auto">
         
-        {/* 3. Judul diubah menjadi putih */}
-        <h1 className="text-3xl font-bold text-white mb-8 text-center">Visi & Misi</h1>
-        
-        <div className="mb-10">
-          {/* 4. Sub-judul diubah menjadi putih */}
-          <h2 className="text-xl font-bold text-white mb-3">Visi</h2>
-          {/* 5. Teks visi diubah menjadi terang dengan latar transparan biru */}
-          <p className="text-slate-200 leading-relaxed bg-blue-900/50 p-5 rounded-xl border-l-4 border-blue-400">
-            {visi}
-          </p>
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-white mb-2">Visi & Misi</h1>
+          <p className="text-slate-300">Arah dan tujuan sekolah kami.</p>
         </div>
 
-        <div>
-          <h2 className="text-xl font-bold text-white mb-3">Misi</h2>
-          {/* 6. Teks misi diubah menjadi terang */}
-          <ul className="list-disc list-outside ml-5 text-slate-300 space-y-3 leading-relaxed">
-            {misi.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        </div>
+        {isLoading ? (
+          <div className="text-center text-slate-400 py-10">Memuat data...</div>
+        ) : (
+          <div className="space-y-8">
+            
+            {/* Bagian Visi */}
+            {visi.length > 0 && (
+              <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-slate-700">
+                <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-600 pb-4">Visi Kami</h2>
+                {visi.map((item) => (
+                  <p key={item.id} className="text-slate-200 text-lg leading-relaxed whitespace-pre-wrap">
+                    {item.konten}
+                  </p>
+                ))}
+              </div>
+            )}
+
+            {/* Bagian Misi */}
+            {misi.length > 0 && (
+              <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-slate-700">
+                <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-600 pb-4">Misi Kami</h2>
+                <ul className="space-y-4">
+                  {misi.map((item, index) => (
+                    <li key={item.id} className="flex gap-4 text-slate-200 text-lg leading-relaxed">
+                      <span className="font-bold text-green-400">{index + 1}.</span>
+                      <span className="whitespace-pre-wrap">{item.konten}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Jika kosong */}
+            {visi.length === 0 && misi.length === 0 && (
+              <div className="text-center text-slate-400 py-10">
+                Belum ada data Visi & Misi.
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );
