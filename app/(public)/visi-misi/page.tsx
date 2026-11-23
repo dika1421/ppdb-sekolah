@@ -6,7 +6,6 @@ export default function PublicVisiMisiPage() {
   const [dataVisiMisi, setDataVisiMisi] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Ambil data dari API dengan parameter visi-misi
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch("/api/galeri?type=visi-misi");
@@ -39,11 +38,14 @@ export default function PublicVisiMisiPage() {
             {visi.length > 0 && (
               <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-slate-700">
                 <h2 className="text-2xl font-bold text-white mb-4 border-b border-slate-600 pb-4">Visi Kami</h2>
-                {visi.map((item) => (
-                  <p key={item.id} className="text-slate-200 text-lg leading-relaxed whitespace-pre-wrap">
-                    {item.konten}
-                  </p>
-                ))}
+                <div className="space-y-4"> {/* Ditambah space-y-4 agar jarak antar paragraf rapi */}
+                  {visi.map((item) => (
+                    <p key={item.id} className="text-slate-200 text-lg leading-relaxed whitespace-pre-wrap">
+                      {/* Membersihkan angka manual di depan teks visi (jika ada) */}
+                      {item.konten.replace(/^\d+\.\s*/, '')}
+                    </p>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -54,8 +56,11 @@ export default function PublicVisiMisiPage() {
                 <ul className="space-y-4">
                   {misi.map((item, index) => (
                     <li key={item.id} className="flex gap-4 text-slate-200 text-lg leading-relaxed">
-                      <span className="font-bold text-green-400">{index + 1}.</span>
-                      <span className="whitespace-pre-wrap">{item.konten}</span>
+                      <span className="font-bold text-green-400 shrink-0">{index + 1}.</span>
+                      <span className="whitespace-pre-wrap">
+                        {/* Membersihkan angka manual di depan teks misi (jika ada) */}
+                        {item.konten.replace(/^\d+\.\s*/, '')}
+                      </span>
                     </li>
                   ))}
                 </ul>
